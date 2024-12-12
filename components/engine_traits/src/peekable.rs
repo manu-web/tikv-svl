@@ -65,11 +65,19 @@ pub trait Peekable {
                        key: &[u8],
     ) -> Result<Option<Self::DBVector>>;
     
-    fn get_value_p_cf_opt(&self,
+    fn get_value_p_cf_range_opt(&self,
                           readopts: &ReadOptions,
                           cf: &str,
-                          key: &[u8],
+                          start_key: &[u8],
+                          end_key: &[u8],
+    ) -> Result<Vec<Option<Self::DBVector>>>;
+
+    fn get_value_p_cf_opt(&self,
+        readopts: &ReadOptions,
+        cf: &str,
+        key: &[u8],
     ) -> Result<Option<Self::DBVector>>;
+
 
     fn get_value_p(&self, key: &[u8]) -> Result<Option<Self::DBVector>> {
         self.get_value_p_opt(&ReadOptions::default(), key)
@@ -79,7 +87,7 @@ pub trait Peekable {
         self.get_value_p_cf_opt(&ReadOptions::default(), cf, key)
     }
 
-    fn get_value_p_cf_range(&self, cf: &str, start_key: &[u8], end_key: &[u8]) -> Result<Option<Self::DBVector>> {
+    fn get_value_p_cf_range(&self, cf: &str, start_key: &[u8], end_key: &[u8]) -> Result<Vec<Option<Self::DBVector>>> {
         self.get_value_p_cf_range_opt(&ReadOptions::default(), cf, start_key, end_key)
     }
     

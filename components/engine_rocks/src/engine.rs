@@ -214,13 +214,30 @@ impl Peekable for RocksEngine {
         cf: &str,
         start_key: &[u8],
         end_key: &[u8],
-    ) -> Result<Vec<RocksDBVector>> {
+    ) -> Result<Vec<Option<RocksDBVector>>> {
         let opt: RocksReadOptions = opts.into();
         let handle = get_cf_handle(&self.db, cf)?;
         let results = self.db.get_external_range_query(handle, start_key, end_key, &opt.into_raw())?;
-        let mapped_results = results.into_iter().map(RocksDBVector::from_raw).collect();
-        Ok(v.map(mapped_results))
+
+        //Checking
+        for result in results {
+            // Assuming `result.ToString()` is a method returning a `String`
+            let string_representation = result.ToString();
+            println!("{}", string_representation);
+        }
+        //FIXME
+
+        //let mapped_results = results.into_iter().map(RocksDBVector::from_raw).collect();
+        let mapped_results: Vec<Option<RocksDBVector>> = results .into_iter() .map(|raw| raw.map(RocksDBVector::from_raw)).collect();
+        // Map the Option<RawType> to Option<RocksDBVector>
+        //let mapped_results = results
+        //.into_iter()
+        //.map(|raw| raw.map(RocksDBVector::from_raw))
+        //.map(|raw| Some(RocksDBVector::from_raw(raw))) // Map each element to Option<RocksDBVector>
+        //.collect();
+        Ok(mapped_results)
     }
+    
 }
 
 impl SyncMutable for RocksEngine {
