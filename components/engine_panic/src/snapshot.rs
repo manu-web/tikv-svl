@@ -61,6 +61,16 @@ impl Peekable for PanicSnapshot {
     ) -> Result<Option<Self::DBVector>> {
         panic!()
     }
+
+    fn get_value_p_cf_range_opt(
+        &self,
+        opts: &ReadOptions,
+        cf: &str,
+        start_key: &[u8],
+        end_key: &[u8],
+    ) -> Result<Vec<RocksDBVector>> {
+        panic!()
+    }
 }
 
 impl Iterable for PanicSnapshot {

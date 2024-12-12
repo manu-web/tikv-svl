@@ -78,6 +78,10 @@ pub trait Peekable {
     fn get_value_p_cf(&self, cf: &str, key: &[u8]) -> Result<Option<Self::DBVector>> {
         self.get_value_p_cf_opt(&ReadOptions::default(), cf, key)
     }
+
+    fn get_value_p_cf_range(&self, cf: &str, start_key: &[u8], end_key: &[u8]) -> Result<Option<Self::DBVector>> {
+        self.get_value_p_cf_range_opt(&ReadOptions::default(), cf, start_key, end_key)
+    }
     
     fn get_valuelog(&self,
                     key: &[u8],

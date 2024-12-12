@@ -299,6 +299,37 @@ where
             .get_value_p_cf_opt(opts, cf, &data_key)
             .map_err(|e| self.handle_get_value_error(e, "", key))
     }
+
+    // fn get_value_p_cf_range_opt(
+    //     &self,
+    //     opts: &ReadOptions,
+    //     cf: &str,
+    //     start_key: &[u8],
+    //     end_key: &[u8],
+    // ) -> EngineResult<Option<Self::DBVector>> {
+    //     check_key_in_range(
+    //         start_key,
+    //         self.region.get_id(),
+    //         self.region.get_start_key(),
+    //         self.region.get_end_key(),
+    //     )
+    //     .map_err(|e| EngineError::Other(box_err!(e)))?;
+
+    //     check_key_in_range(
+    //         end_key,
+    //         self.region.get_id(),
+    //         self.region.get_start_key(),
+    //         self.region.get_end_key(),
+    //     )
+    //     .map_err(|e| EngineError::Other(box_err!(e)))?;
+
+
+    //     let data_start_key = keys::data_key(start_key);
+    //     let data_end_key = keys::data_key(end_key);
+    //     self.snap
+    //         .get_value_p_cf_opt(opts, cf, &data_start_key, &data_end_key)
+    //         .map_err(|e| self.handle_get_value_error(e, "", key))
+    // }
 }
 
 impl<S> RegionSnapshot<S>

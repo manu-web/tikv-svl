@@ -247,6 +247,13 @@ impl Snapshot for Arc<RocksSnapshot> {
         Ok(v.map(|v| v.to_vec()))
     }
 
+    fn pget_cf_wotr_range(&self, cf: CfName, start_key: &Key, end_key: &Key) -> Result<Option<Vec<Value>>> {
+        trace!("RocksSnapshot: pget_cf_wotr_range"; "cf" => cf, "start_key" => %start_key, "end_key" => %end_key);
+        let values = self.get_value_p_cf_range(cf, start_key.as_encoded(), end_key.as_encoded())?;
+        let result = values.map(|vec| vec.into_iter().map(|v| v.to_vec()).collect());
+        Ok(result)
+    }
+
     fn get_cf_opt(&self, opts: ReadOptions, cf: CfName, key: &Key) -> Result<Option<Value>> {
         trace!("RocksSnapshot: get_cf"; "cf" => cf, "key" => %key);
         let v = self.get_value_cf_opt(&opts, cf, key.as_encoded())?;
