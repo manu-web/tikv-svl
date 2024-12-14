@@ -189,37 +189,24 @@ impl<'a, S: Snapshot> RawStoreInner<S> {
         if limit == 0 {
             return Ok(vec![]);
         }
-        let mut cursor = Cursor::new(self.snapshot.iter_cf(cf, option)?, ScanMode::Forward, false);
-        let statistics = statistics.mut_cf_statistics(cf);
-        if !cursor.seek(start_key, statistics)? {
-            return Ok(vec![]);
-        }
+    
+        let end_key = option.get_end_key();
+        let values = self.snapshot.pget_cf_wotr_range(cf, start_key, end_key.unwrap_or(start_key))?;
+    
         let mut pairs = vec![];
-        let mut row_count = 0;
-        let mut time_slice_start = Instant::now();
-        while cursor.valid()? {
-            row_count += 1;
-            if row_count >= MAX_BATCH_SIZE {
-                if time_slice_start.saturating_elapsed() > MAX_TIME_SLICE {
-                    reschedule().await;
-                    time_slice_start = Instant::now();
-                }
-                row_count = 0;
-            }
-            pairs.push(Ok((
-                cursor.key(statistics).to_owned(),
-                if key_only {
+    
+        if let Some(values) = values {
+            for value in values.into_iter().take(limit) {
+                let key = value.key.clone();
+                let value = if key_only {
                     vec![]
                 } else {
-                    cursor.value(statistics).to_owned()
-                },
-            )));
-            if pairs.len() < limit {
-                cursor.next(statistics);
-            } else {
-                break;
+                    value.to_vec() // Retrieve the actual value.
+                };
+                pairs.push(Ok((key, value)));
             }
         }
+    
         Ok(pairs)
     }
 
