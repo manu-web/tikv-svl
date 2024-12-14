@@ -68,7 +68,7 @@ impl Peekable for PanicSnapshot {
         cf: &str,
         start_key: &[u8],
         end_key: &[u8],
-    ) -> Result<Vec<Option<Self::DBVector>>> {
+    ) -> Result<Option<Vec<Self::DBVector>>> {
         panic!()
     }
 }

@@ -174,11 +174,17 @@ impl Peekable for RocksSnapshot {
         cf: &str,
         start_key: &[u8],
         end_key: &[u8],
-    ) -> Result<Vec<Option<RocksDBVector>>> {
+    ) -> Result<Option<Vec<RocksDBVector>>> {
         let opt: RocksReadOptions = opts.into();
         let handle = get_cf_handle(&self.db, cf)?;
         let results = self.db.get_external_range_query(handle, start_key, end_key, &opt.into_raw())?;
-        let mapped_results = results.into_iter().map(RocksDBVector::from_raw).collect();
+        //let mapped_results = results.into_iter().map(RocksDBVector::from_raw).collect();
+        let mapped_results: Option<Vec<RocksDBVector>> = results.map(|dbvecs| {
+            dbvecs.into_iter()
+                  .map(RocksDBVector::from_raw) // Convert each DBVector to RocksDBVector
+                  .collect()
+        });
+
         Ok(mapped_results)
     }
 
