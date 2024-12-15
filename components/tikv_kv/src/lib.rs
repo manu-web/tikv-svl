@@ -248,6 +248,10 @@ pub trait Snapshot: Sync + Send + Clone {
 
     // "position" get on WOTR valuelog
     fn pget_cf_wotr(&self, cf: CfName, key: &Key) -> Result<Option<Value>>;
+
+    // "get range" from WOTRlog
+    fn pget_cf_wotr_range(&self, cf: CfName, start_key: &Key, end_key: &Key) -> Result<Option<Vec<Value>>>;
+
     fn iter(&self, iter_opt: IterOptions) -> Result<Self::Iter>;
     fn iter_cf(&self, cf: CfName, iter_opt: IterOptions) -> Result<Self::Iter>;
     // The minimum key this snapshot can retrieve.

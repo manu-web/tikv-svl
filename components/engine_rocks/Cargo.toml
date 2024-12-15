@@ -54,10 +54,10 @@ case_macros = { path = "../case_macros" }
 #path = "/data/rust-rocksdb-1"
 #USING PATH FOR NOW
 #FIXME
-path = "/nobackup.1/neerajs/Research/Project/rust-rocksdb-1"
-#git = "https://github.com/manu-web/rust-rocksdb-1.git"
-#package = "rocksdb"
-#branch = "wotr"
+#path = "/nobackup.1/neerajs/Research/Project/rust-rocksdb-1"
+git = "https://github.com/manu-web/rust-rocksdb-1.git"
+package = "rocksdb"
+branch = "wotr"
 features = ["encryption", "static_libcpp"]
 
 [dev-dependencies]

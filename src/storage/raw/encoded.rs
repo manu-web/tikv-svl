@@ -85,6 +85,16 @@ impl<S: Snapshot, API: APIVersion> Snapshot for RawEncodeSnapshot<S, API> {
         self.map_value(self.snap.pget_cf_wotr(cf, key))
     }
 
+    fn pget_cf_wotr_range(&self, cf: CfName, start_key: &Key, end_key: &Key) -> Result<Option<Vec<Value>>> {
+        
+        self.snap.pget_cf_wotr_range(cf, start_key, end_key)
+            .map(|values| {
+                values.into_iter()
+                .filter_map(|value| self.map_value(Ok(Some(value))).transpose().ok())
+                .collect()
+            })
+    }
+
     fn iter(&self, iter_opt: IterOptions) -> Result<Self::Iter> {
         Ok(RawEncodeIterator::new(
             self.snap.iter(iter_opt)?,

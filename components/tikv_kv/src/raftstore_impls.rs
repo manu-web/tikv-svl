@@ -81,6 +81,17 @@ impl<S: Snapshot> EngineSnapshot for RegionSnapshot<S> {
         Ok(v.map(|v| v.to_vec()))
     }
 
+    fn pget_cf_wotr_range(&self, cf: CfName, start_key: &Key, end_key: &Key) -> kv::Result<Option<Vec<Value>>> {
+        
+        fail_point!("raftkv_snapshot_pget_cf_wotr_range", |_| Err(box_err!(
+            "injected error for pget_cf_wotr_range"
+        )));
+        
+        let values = self.get_value_p_cf_range(cf, start_key.as_encoded(), end_key.as_encoded())?;
+        let result = values.map(|vec| vec.into_iter().map(|v| v.to_vec()).collect());
+        Ok(result)
+    }
+
     fn get_cf_opt(&self, opts: ReadOptions, cf: CfName, key: &Key) -> kv::Result<Option<Value>> {
         fail_point!("raftkv_snapshot_get_cf", |_| Err(box_err!(
             "injected error for get_cf"
